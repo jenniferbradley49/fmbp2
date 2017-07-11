@@ -162,14 +162,15 @@ commented out, for continuity
                   <div id="right_header_panel"> <!-- this div controls white background and text size -->
 <!-- end of continuity -->
 @section('right_content')
-          
+ <!--         
                     <h3 class="header-brand">This is THE<span class="text-primary">ONE</span> </h3>
                     <h3>The Best Marketing / Landing Page Template</h3>
                     <p>Qusinque rhoncus tempus sem sed ornare. Aenean viverra ornare dui nec mollis. Vestibulum in dui sed velit consequat. Cum sociis natoque penatibus et magnis dis parturient montes.</p>
                     <p>
                         <a href="#features" class="btn btn-md btn-dark btn-rounded page-scroll">Learn More</a>
                         <a href="#pricing" class="btn btn-md btn-primary-filled btn-rounded page-scroll">Our Pricing</a>
-                    </p>	
+                    </p>
+         -->           	
 @endsection	
 
 @section('below_header_content')

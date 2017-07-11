@@ -21,9 +21,9 @@ use Mail;
 class PublicForm extends Model
 {
 	
-	var $adminEmail;
-	var $senderEmail = 'sender@findapublisher.com';
-	var $contactSubject = 'message from contact page - pubhelp';
+	var $adminEmail = '';
+	var $senderEmail = 'sender@f';
+	var $contactSubject = 'message from contact page';
 	var $signUpSubject = 'new client registered';
 	var $leadFromUsSubject = 'author who wants to publish - lead';
 	var $registrationOneSubject = 'potential registrant completed the first page/form';
@@ -722,7 +722,7 @@ if ($str_question == "format")
     
     public function boolSendPHPMail($data,
     		$sender, $recipient, $subject)
-    {
+    {    	  	
     	$to = $recipient;
     	$subject = $subject;
     	$headers = "From: ".$sender;
