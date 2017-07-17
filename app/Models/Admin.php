@@ -624,10 +624,11 @@ class Admin extends Model
     
 
     public function getDataArrayGetAddRole(
-    		$arr_users_processed, $arr_logged_in_user)
+    		$arr_users_processed, $page_heading_content, $arr_logged_in_user)
     {
     	return array(
     			'arr_users' => $arr_users_processed,
+    			'page_heading_content' => $page_heading_content,
     			'arr_logged_in_user' => $arr_logged_in_user,
     			'input_old' =>array(
     					'user_id' => Input::old('user_id', 0)
@@ -1009,6 +1010,35 @@ class Admin extends Model
     
     }
 
+    public function getDataArrayGetViewAllContacts(
+    		$page_heading_content,
+    		$arr_all_contacts,
+    		$arr_logged_in_user)
+    {
+    	return array(
+    			'page_heading_content' => $page_heading_content,
+    			'arr_logged_in_user' => $arr_logged_in_user,
+    			'arr_all_contacts' => $arr_all_contacts
+    	);
+    
+    }
+    
+    
+    public function getDataArrayGetViewOneContact(
+    		$page_heading_content,
+    		$arr_contact,
+    		$arr_logged_in_user)
+    {
+    	return array(
+    			'page_heading_content' => $page_heading_content,
+    			'arr_logged_in_user' => $arr_logged_in_user,
+    			'arr_contact' => $arr_contact
+    	);
+    
+    }
+    
+    
+    
     public function getDataArrayGetViewAllRegistrations(
     		$page_heading_content,
     		$arr_all_regs_registration_data,

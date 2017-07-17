@@ -25,10 +25,15 @@
 	<div class="col-lg-12"> <!-- begin col -->
 <br /><br /><br />
 Thank you for sending information to our publisher search service.  
-We will forward your information to publishers.  If publishers consider 
-your information suitable for their goals, they will contact you shortly.
+We will forward your information to publishers and agents.  If publishers and / or agents consider 
+your manuscript suitable for their goals, they will contact you shortly.
 <br /><br /><br />
-	</div> <!-- end col -->
+<br /><br /><br />
+<br /><br /><br />
+<br /><br /><br />
+<br /><br /><br />
+
+</div> <!-- end col -->
 	<div class="col-lg-2"> <!-- begin col -->
 	&nbsp;
 	</div> <!-- end col -->

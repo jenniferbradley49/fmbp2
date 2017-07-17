@@ -14,12 +14,14 @@ use App\Models\Client;
 use App\Models\Client_registration;
 use App\Models\Role_user;
 use App\Models\Role;
+use App\Models\Contact;
 use App\Models\Salutation;
 use App\Models\State;
 use App\Models\Survey_item;
 use App\Classes\CommonCode;
 use App\Traits\CaptchaTrait;
 use App\User;
+use Carbon\Carbon;
 
 class PublicFormsController extends Controller
 {
@@ -135,6 +137,11 @@ class PublicFormsController extends Controller
     	return view('public/test_bootstrap');//->with('data', $data);
     	 	
     }
+
+    /*
+     * not sure why this code is here, it appears to be 
+     * an old version of index page, no longer useful
+     
     
     public function pubhelp(
     		Request $request,
@@ -190,7 +197,7 @@ class PublicFormsController extends Controller
     			$arr_states);
     	return view('public/pubhelp')->with('data', $data);
     }
-
+*/
 
     public function postMessage(
     		Request $request,
@@ -219,26 +226,31 @@ class PublicFormsController extends Controller
     				
     		$obj_registration->save_registration_data('str_message', $arr_request['str_message']);
     		$obj_registration->save_registration_data('bool_accept', $arr_request['bool_accept']);
-    		$arr_registration_data = $obj_registration
+			$str_date_now_new_york = Carbon::now('America/New_York')->toDateTimeString();
+   			$obj_registration->save_registration_data('str_date_time', $str_date_now_new_york);
+   			$str_date_now_new_york_human_read = Carbon::now('America/New_York')->toDayDateTimeString();
+   			$obj_registration->save_registration_data('str_date_time_human_read', $str_date_now_new_york_human_read);
+   			
+// retrieve all data from this registration
+			$arr_registration_data_raw = $obj_registration
     									->registration_data()
     									->get()
     									->toArray();
-    										
-//   echo "publicFormsController, line 183<br>"; 
- //   echo "<pre>";
-//    print_r($arr_registration_data);
-//    echo "</pre>";		
-    		 										 			
+    		$arr_registration_data_formatted = $publicForm->format_registration_data($arr_registration_data_raw);
+
+    		$registration->notifyAdmin(
+    				$publicForm,
+    				$arr_registration_data_formatted
+    				);
+    		
     		$registration->record_registration(
     			$client, 
     			$client_registration,
     			$publicForm,
-    			$arr_registration_data,  
+    			$arr_registration_data_formatted,  
     			$int_registration_id    			 
     			);
     			
- //  echo "publicformsController, line 385<br>"; 
-//   echo "postIndex completed, going to view<br>";	
     		return view('public/message_results');//->with('data', $data);    	 
     	}
     	else 
@@ -340,7 +352,8 @@ class PublicFormsController extends Controller
     		Client $client,
     		Role_user $roleUser,
     		Role $role,
-    		PublicPages $publicPages)
+    		PublicPages $publicPages,
+    		Contact $contact)
     {
     //		return redirect('contact')
     	//		->withErrors($validator)
@@ -368,18 +381,23 @@ class PublicFormsController extends Controller
     		//		echo "<pre>";
     		//	print_r($arr_request);
     		//		echo "<pre>";
-    
+    	$contact->str_first_name = $arr_request['first_name'];
+    	$contact->str_last_name = $arr_request['last_name'];
+    	$contact->str_telephone = $arr_request['telephone'];
+    	$contact->str_email = $arr_request['email'];
+    	$contact->text_message = $arr_request['message'];
+    	$contact->save();
+    	 
     	$dataForm = $publicForms->getDataArrayPostContact($arr_request);
     	$page_heading_content = "Contact Us - Results";
 		$dataPublic = $publicPages->getDataArrayGetPublicPage($page_heading_content);
     	$data = array_merge($dataForm, $dataPublic);
     		// temp code until confidence in mailgun
     	$publicForms->boolSendPHPMail(
-    			$dataForm,
+    			$dataForm['arr_request'],
     			$arr_request['email'],
     			$publicForms->adminEmail,
-    			$publicForms->contactSubject
-    			    
+    			$publicForms->contactSubject   			    
     			);		
     		// end temp codee
     		//	permanent code
@@ -420,7 +438,7 @@ class PublicFormsController extends Controller
     	$arr_request = $publicForm->manuallyConformIndex($salutation, $state, $survey_question, $arr_request);
 
     	$arr_request = $publicForm->make_readable($salutation, $state, $survey_item, $arr_request);
-    	$arr_request = $publicForm->cleanRequestArray($arr_request);
+//    	$arr_request = $publicForm->cleanRequestArray($arr_request);
     	 
  //   	echo "<br><br>after make_readable<br>";
  //   	echo "<pre>";
@@ -457,22 +475,23 @@ class PublicFormsController extends Controller
   */  			
 //   echo "publicformsController, line 385<br>"; 
  //  echo "postIndex completed, going to view<br>";	
-   $dataForm = $publicForm->getDataArrayPostIndex(
-   		$arr_request
+//   $dataForm = $publicForm->getDataArrayPostIndex(
+//   		$arr_request
 //   		$user->id,
 //   		$client->cloaked_client_id,
 //   		$bool_role_assigned
    		//				$partialDirector->getNavbarRightPublic()
-   );
+//   );
    // email explodes the array
 //   $dataForm = array('data' => $data);
-   $publicForm->boolSendMail(
-   		'registration_one',
-   		$dataForm,
-   		$arr_request['str_email'],
-   		$publicForm->adminEmail,
-   		$publicForm->registrationOneSubject
-   );
+// the next two emails are leftovers from registration, not relevant for index
+//   $publicForm->boolSendMail(
+//   		'registration_one',
+//   		$dataForm,
+//   		$arr_request['str_email'],
+//   		$publicForm->adminEmail,
+//   		$publicForm->registrationOneSubject
+//   );
    // this email sends a thank you to to new client registering
    // commented out, as mailgun only allows email to be sent to one address
    // until the domain is verified with mailgun
@@ -485,13 +504,17 @@ class PublicFormsController extends Controller
     		$publicForms->signUpThankYouSubject
     );
    */
-   		$page_heading_content = "Add a message";
-   		$dataPublic = $publicPages->getDataArrayGetPublicPage($page_heading_content);
-   		$data = array_merge($dataForm, $dataPublic);
+//   		$page_heading_content = "Add a message";
+ //  		$dataPublic = $publicPages->getDataArrayGetPublicPage($page_heading_content);
+ //  		$data = array_merge($dataForm, $dataPublic);
  		return redirect ('message');
 //   		return view('public/results')->with('data', $data);    	 
     }
 
+    
+ /*
+  * not sure why this page is used
+     
     public function postPubhelp(
     		Request $request,
     		PublicForm $publicForm,
@@ -529,6 +552,8 @@ class PublicFormsController extends Controller
     	$registration->record_registration($arr_request, $request->ip(), $int_registration_id, $client, $int_public_registration_id);
     	return view('public/pubhelp_results');//->with('data', $data);
     }
+  */
+    
     
     //this is to test data sent to clients
     // combines with a test cleint, 

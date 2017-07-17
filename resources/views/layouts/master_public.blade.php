@@ -127,7 +127,7 @@ color: #1fc585;
                 <!--  
                     <li><button class="btn btn-primary-filled-nav btn-rounded white_background_btn">&nbsp;&nbsp;White background&nbsp;&nbsp;</button></li>
                  -->
-                    <li><a href="home" class="page-scroll">Home</a></li>
+                    <li><a href="/" class="page-scroll">Home</a></li>
                 	<li><a href="contact" class="page-scroll">Contact</a></li>
                  <!--     
                     <li><a href="#how" class="page-scroll"><span>How it Works</span></a></li>

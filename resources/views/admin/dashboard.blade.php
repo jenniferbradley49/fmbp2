@@ -54,7 +54,7 @@
    <a href="/admin/view_all_registrations">View all registrations / one registration</a>         
     </div>
 <div class="col-sm-5"> 
-   <a href='/admin/'></a>
+   <a href='/admin/view_all_contacts'>View all contacts from contact page</a>
 </div>
     
 <div class="col-sm-1"> </div>

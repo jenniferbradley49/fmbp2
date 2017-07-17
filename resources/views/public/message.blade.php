@@ -87,7 +87,7 @@ commented out, for continuity
 <!-- start row for accept checkbox -->
 <div class="row">
 	<div class="col-lg-10"> <!-- begin col -->
-		Yes, please, I would like to be contacted by interested publishers.
+		Yes, please, I would like to be contacted by interested publishers and agents.
 		<br /><br />
 	</div> <!-- end col -->
 	<div class="col-lg-2"> <!-- begin col -->
@@ -145,13 +145,6 @@ commented out, for continuity
 <!-- end of continuity -->
 @section('right_content')
 
-                    <h3 class="header-brand">This is THE<span class="text-primary">ONE</span> </h3>
-                    <h3>The Best Marketing / Landing Page Template</h3>
-                    <p>Qusinque rhoncus tempus sem sed ornare. Aenean viverra ornare dui nec mollis. Vestibulum in dui sed velit consequat. Cum sociis natoque penatibus et magnis dis parturient montes.</p>
-                    <p>
-                        <a href="#features" class="btn btn-md btn-dark btn-rounded page-scroll">Learn More</a>
-                        <a href="#pricing" class="btn btn-md btn-primary-filled btn-rounded page-scroll">Our Pricing</a>
-                    </p>
 @endsection
 
 @section('below_header_content')

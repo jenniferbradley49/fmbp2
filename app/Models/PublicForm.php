@@ -22,7 +22,7 @@ class PublicForm extends Model
 {
 	
 	var $adminEmail = '';
-	var $senderEmail = 'sender@f';
+	var $senderEmail = '';
 	var $contactSubject = 'message from contact page';
 	var $signUpSubject = 'new client registered';
 	var $leadFromUsSubject = 'author who wants to publish - lead';
@@ -31,6 +31,7 @@ class PublicForm extends Model
 	public function __construct()
 	{
 		$this->adminEmail = env('ADMIN_EMAIL');
+		$this->senderEmail = env('SENDER_EMAIL');
 	}
 
 	public function getValidationRulesMessage()
@@ -455,26 +456,52 @@ class PublicForm extends Model
     			$dataAuthorInfoTwo); 
     }
     
+ /*
+  * obviated by better code in make_readable
     
     public function cleanRequestArray($arr_request)
     {
-    	unset($arr_request['int_genre']);
-    	unset($arr_request['int_schedule']);
-    	unset($arr_request['int_contact_time']);
-    	unset($arr_request['int_age']);
-    	unset($arr_request['int_salutation_id']);
-    	unset($arr_request['int_state_id']);
-    	unset($arr_request['str_telephone_ac']);   
-    	unset($arr_request['str_telephone_two']);   
-    	unset($arr_request['str_telephone_three']);   
-    	unset($arr_request['int_format_mw']);
-    	unset($arr_request['int_format_tw']);
-    	unset($arr_request['int_format_hw']);
-    	unset($arr_request['int_format_mo']);
-    	unset($arr_request['int_format_pd']);   
+    	if (isset($arr_request['int_genre']))
+    		unset($arr_request['int_genre']);
+    	if (isset($arr_request['int_schedule']))
+    		unset($arr_request['int_schedule']);
+    	if (isset($arr_request['int_contact_time']))
+    		unset($arr_request['int_contact_time']);
+    	if (isset($arr_request['int_age']))
+    		unset($arr_request['int_age']);
+    	if (isset($arr_request['int_salutation_id']))
+    		unset($arr_request['int_salutation_id']);
+    	if (isset($arr_request['int_state_id']))
+    		unset($arr_request['int_state_id']);
+    	if (isset($arr_request['str_telephone_ac']))
+    		unset($arr_request['str_telephone_ac']);   
+    	if (isset($arr_request['str_telephone_two']))
+    		unset($arr_request['str_telephone_two']);   
+    	if (isset($arr_request['str_telephone_three']))
+    		unset($arr_request['str_telephone_three']);   
+    	if (isset($arr_request['int_format_mw']))
+    		unset($arr_request['int_format_mw']);
+    	if (isset($arr_request['int_format_tw']))
+    		unset($arr_request['int_format_tw']);
+    	if (isset($arr_request['int_format_hw']))
+    		unset($arr_request['int_format_hw']);
+    	if (isset($arr_request['int_format_mo']))
+    		unset($arr_request['int_format_mo']);
+    	if (isset($arr_request['int_format_pd']))
+    		unset($arr_request['int_format_pd']);   
+    	if (isset($arr_request['int_format_ws']))
+    		unset($arr_request['int_format_ws']);
+    	if (isset($arr_request['int_format_np']))
+    		unset($arr_request['int_format_np']);
+    	if (isset($arr_request['int_format_ap']))
+    		unset($arr_request['int_format_ap']);
+    	if (isset($arr_request['int_format_or']))
+    		unset($arr_request['int_format_or']);
+  //  	if (isset($arr_request['']))
+  //  	unset($arr_request['int_format_pd']);   
     	return $arr_request;
     }
-
+*/
     
     public function conformCheckbox($checkboxVal)
     {
@@ -567,48 +594,59 @@ class PublicForm extends Model
     }
 
 
+    public function format_registration_data($arr_registration_data_raw)
+    {
+    	foreach($arr_registration_data_raw as $item)
+    	{
+    		$arr_registration_data_formatted[$item['str_col_name']] = $item['str_value'];
+    	}
+    	// laravel email automatically explodes the array
+    	// so this is wrapped in a secondary array
+    	return array('arr_data' => $arr_registration_data_formatted);
+    }
 
     public function make_readable(
     		Salutation $salutation, 
     		State $state, 
     		Survey_item $survey_item, 
-    		$arr_request)
+    		$arr_request_raw)
     {
     	// this function needs to be manually adjusted with every change in survey question and survey items
     	// particularly when changing a multiple response item
     	// get genre
-    	$obj_survey_item = $survey_item->find($arr_request['int_genre']);
+    	$obj_survey_item = $survey_item->find($arr_request_raw['int_genre']);
     	$arr_request['str_genre'] = $obj_survey_item->str_text;
     	 
     	// get schedule
-    	$obj_survey_item = $survey_item->find($arr_request['int_schedule']);
+    	$obj_survey_item = $survey_item->find($arr_request_raw['int_schedule']);
     	$arr_request['str_schedule'] = $obj_survey_item->str_text;
 
     	//get preferred contact time
-    	$obj_survey_item = $survey_item->find($arr_request['int_contact_time']);
+    	$obj_survey_item = $survey_item->find($arr_request_raw['int_contact_time']);
     	$arr_request['str_contact_time'] = ($obj_survey_item == null)?'not offered':$obj_survey_item->str_text;
 
     	// get author age qualificatino
-    	$obj_survey_item = $survey_item->find($arr_request['int_age']);
+    	$obj_survey_item = $survey_item->find($arr_request_raw['int_age']);
     	$arr_request['str_age'] = ($obj_survey_item == null)?'not offered':$obj_survey_item->str_text;
     	 
 		// get manucript length
-    	$obj_survey_item = $survey_item->find($arr_request['int_length']);
+    	$obj_survey_item = $survey_item->find($arr_request_raw['int_length']);
     	$arr_request['str_length'] = ($obj_survey_item == null)?'not offered':$obj_survey_item->str_text;
 
     	// get author experience level
-    	$obj_survey_item = $survey_item->find($arr_request['int_experience']);
+    	$obj_survey_item = $survey_item->find($arr_request_raw['int_experience']);
     	$arr_request['str_experience'] = ($obj_survey_item == null)?'not offered':$obj_survey_item->str_text;
     	 
     	// get formats
-    	$arr_formats['int_format_mw'] = $arr_request['int_format_mw'];
-    	$arr_formats['int_format_hw'] = $arr_request['int_format_hw'];
-    	$arr_formats['int_format_tw'] = $arr_request['int_format_tw'];
-    	$arr_formats['int_format_ws'] = $arr_request['int_format_ws'];
-    	$arr_formats['int_format_pd'] = $arr_request['int_format_pd'];
-    	$arr_formats['int_format_np'] = $arr_request['int_format_np'];
-    	$arr_formats['int_format_ap'] = $arr_request['int_format_ap'];
-    	$arr_formats['int_format_or'] = $arr_request['int_format_or'];
+    	$arr_formats['int_format_mw'] = $arr_request_raw['int_format_mw'];
+//    	$arr_formats['int_format_mo'] = $arr_request_raw['int_format_mo'];
+    	$arr_formats['int_format_hw'] = $arr_request_raw['int_format_hw'];
+    	$arr_formats['int_format_tw'] = $arr_request_raw['int_format_tw'];
+    	$arr_formats['int_format_ws'] = $arr_request_raw['int_format_ws'];
+    	$arr_formats['int_format_pd'] = $arr_request_raw['int_format_pd'];
+    	$arr_formats['int_format_np'] = $arr_request_raw['int_format_np'];
+    	$arr_formats['int_format_ap'] = $arr_request_raw['int_format_ap'];
+    	$arr_formats['int_format_or'] = $arr_request_raw['int_format_or'];
     	// get human readable text associated with ID
     	$arr_formats_results = array();
     	foreach ($arr_formats as $int_format)
@@ -622,14 +660,14 @@ class PublicForm extends Model
     	// implode to one string
     	$arr_request['str_formats'] = implode(', ', $arr_formats_results);
     	 
-    	$salutation = $salutation->find($arr_request['int_salutation_id']);
+    	$salutation = $salutation->find($arr_request_raw['int_salutation_id']);
     	$arr_request['str_salutation'] = $salutation->str_text;
 
-    	$state = $state->find($arr_request['int_state_id']);
+    	$state = $state->find($arr_request_raw['int_state_id']);
     	$arr_request['str_state'] = $state->str_text;
     	
-    	$arr_request['str_telephone'] = '('.$arr_request['str_telephone_ac'].') ';
-    	$arr_request['str_telephone'] .= $arr_request['str_telephone_two'].'-'.$arr_request['str_telephone_three'];
+    	$arr_request['str_telephone'] = '('.$arr_request_raw['str_telephone_ac'].') ';
+    	$arr_request['str_telephone'] .= $arr_request_raw['str_telephone_two'].'-'.$arr_request_raw['str_telephone_three'];
 		return $arr_request;
     }
     
@@ -727,7 +765,7 @@ if ($str_question == "format")
     	$subject = $subject;
     	$headers = "From: ".$sender;
     	$txt = "";
-    	foreach ($data['arr_request'] as $key => $val)
+    	foreach ($data as $key => $val)
     	{
     		$txt .= $key . " = " . $val . "\r\n";
     	}
@@ -739,10 +777,10 @@ if ($str_question == "format")
     public function boolSendMail($which, $data, 
     		$sender, $recipient, $subject)
     {
-//    	echo "<br><br>PublicForm model,line 635<br>";
-//    	echo "<pre>";
-//    	print_r($data);
-//    	echo "</pre>";
+ //   	echo "<br><br>PublicForm model,line 777<br>";
+ //   	echo "<pre>";
+ //   	print_r($data);
+ //   	echo "</pre>";
     	 
     	$arr_params = array(
     			'sender' => $sender,

@@ -73,13 +73,13 @@ commented out, for continuity
 		@include('partials._index_two')
 	@elseif ($data['int_which'] == 3)
 		@include('partials._index_three')
-	@elseif ($data['int_which'] == 2)
-		@include('partials.index_one')
-	@elseif ($data['int_which'] == 2)
-		@include('partials.index_one')
-	@elseif ($data['int_which'] == 2)
-		@include('partials.index_one')
-	@else @include('partials.index_one')
+	@elseif ($data['int_which'] == 4)
+		@include('partials._index_four')
+	@elseif ($data['int_which'] == 5)
+		@include('partials._index_five')
+	@elseif ($data['int_which'] == 6)
+		@include('partials.index_six')
+	@else @include('partials._index_one')
 	@endif
                     
 @endsection

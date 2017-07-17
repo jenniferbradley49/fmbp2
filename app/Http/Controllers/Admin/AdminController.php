@@ -11,6 +11,7 @@ use App\Models\Admin;
 use App\Models\Role;
 use App\Models\Role_user;
 use App\Models\Client;
+use App\Models\Contact;
 use App\Models\PublicPages;
 use App\Models\Survey_question;
 use App\Models\Survey_item;
@@ -21,7 +22,7 @@ use App\Models\Registration;
 use Hash;
 use Redirect;
 use DB;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use App\Classes\RoleHelper;
 //use App\classes\Communication;
 use App\Classes\CommonCode;
@@ -43,12 +44,21 @@ class AdminController extends Controller
 	{		
 //		$this->middleware('three_step:admin');
 //		$this->middleware('three_step');
-
+echo "admin controller, construct function, line 46<br>";
+echo "auth user = ";
+print_r(Auth::user());
+echo "<br>";
+echo Auth::id();
+echo "<br>";
+//Auth::logout();
 		$this->middleware('auth');
 		if (Auth::check())
 		{
+			echo "admin controller, construct function, line 50, auth check returned true<br>";
+				
 			$this->middleware('role:admin');
 			$this->obj_logged_in_user = Auth::user();
+			print_r($this->obj_logged_in_user);
 			$this->arr_logged_in_user = $roleHelper->prepare_logged_in_user_info($this->obj_logged_in_user);
 
 		}  // end if Auth::check()
@@ -135,6 +145,7 @@ class AdminController extends Controller
     	$page_heading_content = "Admin dashboard page";
     	$data = $admin->getDataArrayGetAddRole(
     			$arr_users_processed,
+    			$page_heading_content,
     			$this->arr_logged_in_user);
     	return view('admin/add_role_admin')->with('data', $data);
     }
@@ -634,6 +645,48 @@ foreach($obj_all_clients_raw as $client_raw)
     		//   	echo "</pre>";
     	return view('admin/view_client')->with('data', $data);
     }
+
+
+    public function get_view_all_contacts(
+    		Admin $admin,
+    		Contact $contact,
+    		Request $request)
+    {
+    	// get all registrations
+    	$obj_contacts = $contact
+    	->orderBy("created_at", 'desc')
+    	->get();
+    	// if no contacts, notify user
+    	if (is_null($obj_contacts))
+    	{
+    		//    		echo "no client found for this user";
+    		$page_heading_content = "No contacts found";
+    		$data = $admin->getDataArrayGetNoContacts(
+    				$page_heading_content,
+    				//    				$request->client_user_id,
+    				$this->arr_logged_in_user);
+    		return view('admin/no_contacts')->with('data', $data);
+    	}
+    	 
+    	$arr_all_contacts = $obj_contacts->toArray();
+    	foreach ($arr_all_contacts as &$arr_contact)
+    	{
+    		$arr_contact['link'] = '/admin/view_one_contact/'.$arr_contact['id'];
+    	}
+    
+    	$page_heading_content = "View all contacts";
+    	$data = $admin->getDataArrayGetViewAllContacts(
+    			$page_heading_content,
+    			$arr_all_contacts,
+    			$this->arr_logged_in_user
+    	);
+    	//   	echo "admin controller, line 679";
+    	//   	echo "<pre>";
+    	//   	print_r($data);
+    	//   	echo "</pre>";
+    	return view('admin/view_all_contacts')->with('data', $data);
+    }
+    
     
 
     public function get_view_all_registrations(
@@ -700,6 +753,61 @@ foreach($obj_all_clients_raw as $client_raw)
     }
     
 
+    public function get_view_one_contact(
+    		Admin $admin,
+    		Contact $contact,
+    		Request $request)
+    {
+    	// get all contacts
+    	$obj_contact = $contact
+    	->find($request->contact_id);
+    	// if no contacts, notify user
+    	if (is_null($obj_contact))
+    	{
+    		//    		echo "no client found for this user";
+    		$page_heading_content = "No contact found";
+    		$data = $admin->getDataArrayGetNoContacts(
+    				$page_heading_content,
+    				//    				$request->client_user_id,
+    				$this->arr_logged_in_user);
+    		return view('admin/no_contacts')->with('data', $data);
+    	}
+    
+    	//   	$arr_all_regs_contact_data = array();
+    
+    	// iterate through each contact, get contact data
+    	//   	foreach ($obj_contacts as $foreach_contact)
+    		//    	{
+//    		$obj_contact_data =
+//    		$obj_contact
+ //   		->contact_data;
+    
+    	$arr_contact = $obj_contact->toArray();
+    	// reformulate each reg_data to one array with all data
+//    	foreach ($arr_contact as $item)
+ //   	{
+//    		$arr_contact_data_processed[$item['str_col_name']] =
+//    		$item['str_value'];
+//    	}
+    	// add contact ID, created at, and link for drill down
+ //   	$arr_contact_data_processed['contact_id'] = $obj_contact->id;
+ //   	$arr_contact_data_processed['created_at'] = $obj_contact->created_at;
+    	//   		$arr_contact_data_processed['link'] = '/admin/view_contact/'.$foreach_contact->id;
+    
+    	$page_heading_content = "View one contact";
+    	$data = $admin->getDataArrayGetViewOneContact(
+    			$page_heading_content,
+    			$arr_contact,
+    			$this->arr_logged_in_user
+    	);
+    	//   	echo "admin controller, line 679";
+    	//   	echo "<pre>";
+    	//   	print_r($data);
+    	//   	echo "</pre>";
+    	return view('admin/view_one_contact')->with('data', $data);
+    }
+    
+    
     public function get_view_one_registration(
     		Admin $admin,
     		Registration $registration,

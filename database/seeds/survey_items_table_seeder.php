@@ -382,42 +382,42 @@ class survey_items_table_seeder extends Seeder
     	'survey_question_id'     => $obj_survey_question->id,
     	'bool_include' => 1,
     	'int_order' => 110,
-    	'str_text' => '1000 to 9,999'
+    	'str_text' => '1000 to 9,999 words'
     			));
     	 
     	Survey_item::create(array(
     	'survey_question_id'     => $obj_survey_question->id,
     	'bool_include' => 1,
     	'int_order' => 120,
-    	'str_text' => '10,000 to 24,999'
+    	'str_text' => '10,000 to 24,999 words'
     			));
     	 
     	Survey_item::create(array(
     	'survey_question_id'     => $obj_survey_question->id,
     	'bool_include' => 1,
     	'int_order' => 130,
-    	'str_text' => '25,000 to 49,999'
+    	'str_text' => '25,000 to 49,999 words'
     			));
     	 
     	Survey_item::create(array(
     	'survey_question_id'     => $obj_survey_question->id,
     	'bool_include' => 1,
     	'int_order' => 150,
-    	'str_text' => '50,000 to 74,999'
+    	'str_text' => '50,000 to 74,999 words'
     			));
     	 
     	Survey_item::create(array(
     	'survey_question_id'     => $obj_survey_question->id,
     	'bool_include' => 1,
     	'int_order' => 160,
-    	'str_text' => '75,009 to 99,999'
+    	'str_text' => '75,000 to 99,999 words'
     			));
     	 
     	Survey_item::create(array(
     	'survey_question_id'     => $obj_survey_question->id,
     	'bool_include' => 1,
     	'int_order' => 170,
-    	'str_text' => '100,000 or more'
+    	'str_text' => '100,000 or more words'
     			));
     	 
     	Survey_item::create(array(

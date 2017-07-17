@@ -44,11 +44,6 @@ class Registration extends Model
     		$arr_request, $str_ip_address, 
     		$int_public_id, $survey_project_id)
     {
-//    	echo 'in save_registration, line 46<br>';
-//    	echo '<pre>';
-//    	print_r($arr_request);
- //   	echo '</pre>';
-    	//    	echo "bool_include = ".$arr_request['bool_include']."<br>";
     	// I did not use the laravel eloquent create,
     	// as there is an expectation of hacking, and mass assignment
     	// invites hacking.  The $arr_request array has already been specifically assigned
@@ -63,38 +58,21 @@ class Registration extends Model
     	foreach ($arr_request as $key => $val)
     	{
     		$this->save_registration_data($key, $val);
-// 			$registration_data = new Registration_data;			
-//    		$registration_data->str_col_name = $key;
-//    		$registration_data->str_value = $val;
-//    		$registration->registration_data()->save($registration_data);   	
     	}
     	// add IP
     	$this->save_registration_data('str_ip_address', $str_ip_address);
-//    	$registration_data = new Registration_data;
-//    	$registration_data->str_col_name = 'str_ip_address';
-//    	$registration_data->str_value = $str_ip_address;
-//    	$registration->registration_data()->save($registration_data);
 
     	// add survey project id
     	$this->save_registration_data('survey_project_id', $survey_project_id);
-//    	$registration_data = new Registration_data;
- //   	$registration_data->str_col_name = 'survey_project_id';
-//    	$registration_data->str_value = $survey_project_id;
-//    	$registration->registration_data()->save($registration_data);
 
     	// add public id
     	$this->save_registration_data('int_public_id', $int_public_id);
-//    	$registration_data = new Registration_data;
-//    	$registration_data->str_col_name = 'int_public_id';
-//    	$registration_data->str_value = $int_public_id;
-//    	$registration->registration_data()->save($registration_data);
     	 
     	return $int_registration_id;
     	 
     }
     
     public function save_registration_data(
-//    		Registration_data $registration_data, 
 			$str_col_name,
     		$str_value
     		)
@@ -110,13 +88,14 @@ class Registration extends Model
     		Client $client,
     		Client_registration $client_registration,
     		PublicForm $publicForm,
-    		$arr_data,
-//    		$arr_request, 
-//    		$str_ip_address, 
+    		$data,
     		$int_registration_id
-//    		$int_public_id   		
     		)
     {
+//    	$data = array('arr_data' => $arr_data);
+    	// send record of registration to admin
+		
+    	    	 
     	$obj_all_active_clients = $client->where('bool_active', 1)->get();
     	foreach ($obj_all_active_clients as $client)
     	{
@@ -145,27 +124,41 @@ class Registration extends Model
     	
     	}
     }
+
     
+    public function notifyAdmin(
+    		PublicForm $publicForm,
+    		$data
+    		
+    		)
+    {
+    	//  notify Admin of registration
+    	
+    	// temp code until confidence in mailgun
+    	$publicForm->boolSendPHPMail(
+    			$data['arr_data'],	// data to be sent
+    			$publicForm->senderEmail, // email sender
+    			$publicForm->adminEmail, // email recipient
+    			$publicForm->leadFromUsSubject // email subject
+    	);
+    	
+    	$publicForm->boolSendMail(
+    			'publish_registration',  // views/emails/template
+    			$data,	// data to be sent
+    			$publicForm->senderEmail, // email sender
+    			$publicForm->adminEmail, // email recipient
+    			$publicForm->leadFromUsSubject // email subject
+    	);
+    	 
+    }
 
     public function propagateRegistration(
-//    		$str_lead_destination, 
     		Client $client,
     		PublicForm $publicForm,
     		$arr_data,
-//    		$arr_request, 
-//    		$str_ip_address, 
     		$int_registration_id
-//    		$int_public_id   		
     		)
-    {
-//    	echo "registration, line 141 ";
-//    	echo "client->bool_delivery_crm ".$client->bool_delivery_crm."<br>";
-    	
-//    	echo "<br><br>registration model, line 144<br>";
-//    	echo "<pre>";
- //   	print_r($arr_data);
-//    	echo "</pre>";
-    	 
+    {    	 
     	// determines whether client wants delivery by email or CRM
     	if (isset($client->bool_delivery_crm))
     	{
@@ -185,8 +178,6 @@ class Registration extends Model
     
     	if (!$bool_delivery_crm)
     	{ 
-//  echo "<br><br>in registration model, line 153<br>";
-//  echo "admin email = ".$publicForm->adminEmail."<br><br><br>";
   
     		$publicForm->boolSendMail(
     				'publish_registration',  // views/emails/template
@@ -195,13 +186,13 @@ class Registration extends Model
 // the commented out line (next), is the real recipient
 // but as of 170607, a validated mailgun domain will still not send to 
 // any email except the login email
-//    				$client->str_delivery_email, // email recipient
-    				$publicForm->adminEmail, // email recipient
+    				$client->str_delivery_email, // email recipient
+//    				$publicForm->adminEmail, // email recipient
     				$publicForm->leadFromUsSubject // eail subject
     		);
     		
     	}
-    	echo "in Registration model, line 160, str_lead_destination = $client->str_lead_destination<br>";
+ //   	echo "in Registration model, line 160, str_lead_destination = $client->str_lead_destination<br>";
 /*    	 
     	// Initialize Guzzle client
     	$guzzleClient = new \GuzzleHttp\Client();
@@ -249,8 +240,5 @@ class Registration extends Model
     		$obj_registration = $this->where('int_public_id', $int_test)->first();
     	} while($obj_registration != null);
     	return $int_test;
-    }
-    
-    
-    
+    }    
 }
