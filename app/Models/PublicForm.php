@@ -456,11 +456,11 @@ class PublicForm extends Model
     			$dataAuthorInfoTwo); 
     }
     
- /*
-  * obviated by better code in make_readable
     
     public function cleanRequestArray($arr_request)
     {
+    	if (isset($arr_request['genre']))
+    		unset($arr_request['genre']);
     	if (isset($arr_request['int_genre']))
     		unset($arr_request['int_genre']);
     	if (isset($arr_request['int_schedule']))
@@ -497,11 +497,13 @@ class PublicForm extends Model
     		unset($arr_request['int_format_ap']);
     	if (isset($arr_request['int_format_or']))
     		unset($arr_request['int_format_or']);
-  //  	if (isset($arr_request['']))
-  //  	unset($arr_request['int_format_pd']);   
+    	if (isset($arr_request['int_length']))
+    		unset($arr_request['int_length']);   
+    	if (isset($arr_request['int_experience']))
+    		unset($arr_request['int_experience']);   
     	return $arr_request;
     }
-*/
+
     
     public function conformCheckbox($checkboxVal)
     {
@@ -609,44 +611,44 @@ class PublicForm extends Model
     		Salutation $salutation, 
     		State $state, 
     		Survey_item $survey_item, 
-    		$arr_request_raw)
+    		$arr_request)
     {
     	// this function needs to be manually adjusted with every change in survey question and survey items
     	// particularly when changing a multiple response item
     	// get genre
-    	$obj_survey_item = $survey_item->find($arr_request_raw['int_genre']);
+    	$obj_survey_item = $survey_item->find($arr_request['int_genre']);
     	$arr_request['str_genre'] = $obj_survey_item->str_text;
     	 
     	// get schedule
-    	$obj_survey_item = $survey_item->find($arr_request_raw['int_schedule']);
+    	$obj_survey_item = $survey_item->find($arr_request['int_schedule']);
     	$arr_request['str_schedule'] = $obj_survey_item->str_text;
 
     	//get preferred contact time
-    	$obj_survey_item = $survey_item->find($arr_request_raw['int_contact_time']);
+    	$obj_survey_item = $survey_item->find($arr_request['int_contact_time']);
     	$arr_request['str_contact_time'] = ($obj_survey_item == null)?'not offered':$obj_survey_item->str_text;
 
     	// get author age qualificatino
-    	$obj_survey_item = $survey_item->find($arr_request_raw['int_age']);
+    	$obj_survey_item = $survey_item->find($arr_request['int_age']);
     	$arr_request['str_age'] = ($obj_survey_item == null)?'not offered':$obj_survey_item->str_text;
     	 
 		// get manucript length
-    	$obj_survey_item = $survey_item->find($arr_request_raw['int_length']);
+    	$obj_survey_item = $survey_item->find($arr_request['int_length']);
     	$arr_request['str_length'] = ($obj_survey_item == null)?'not offered':$obj_survey_item->str_text;
 
     	// get author experience level
-    	$obj_survey_item = $survey_item->find($arr_request_raw['int_experience']);
+    	$obj_survey_item = $survey_item->find($arr_request['int_experience']);
     	$arr_request['str_experience'] = ($obj_survey_item == null)?'not offered':$obj_survey_item->str_text;
     	 
     	// get formats
-    	$arr_formats['int_format_mw'] = $arr_request_raw['int_format_mw'];
-//    	$arr_formats['int_format_mo'] = $arr_request_raw['int_format_mo'];
-    	$arr_formats['int_format_hw'] = $arr_request_raw['int_format_hw'];
-    	$arr_formats['int_format_tw'] = $arr_request_raw['int_format_tw'];
-    	$arr_formats['int_format_ws'] = $arr_request_raw['int_format_ws'];
-    	$arr_formats['int_format_pd'] = $arr_request_raw['int_format_pd'];
-    	$arr_formats['int_format_np'] = $arr_request_raw['int_format_np'];
-    	$arr_formats['int_format_ap'] = $arr_request_raw['int_format_ap'];
-    	$arr_formats['int_format_or'] = $arr_request_raw['int_format_or'];
+    	$arr_formats['int_format_mw'] = $arr_request['int_format_mw'];
+//    	$arr_formats['int_format_mo'] = $arr_request['int_format_mo'];
+    	$arr_formats['int_format_hw'] = $arr_request['int_format_hw'];
+    	$arr_formats['int_format_tw'] = $arr_request['int_format_tw'];
+    	$arr_formats['int_format_ws'] = $arr_request['int_format_ws'];
+    	$arr_formats['int_format_pd'] = $arr_request['int_format_pd'];
+    	$arr_formats['int_format_np'] = $arr_request['int_format_np'];
+    	$arr_formats['int_format_ap'] = $arr_request['int_format_ap'];
+    	$arr_formats['int_format_or'] = $arr_request['int_format_or'];
     	// get human readable text associated with ID
     	$arr_formats_results = array();
     	foreach ($arr_formats as $int_format)
@@ -660,14 +662,14 @@ class PublicForm extends Model
     	// implode to one string
     	$arr_request['str_formats'] = implode(', ', $arr_formats_results);
     	 
-    	$salutation = $salutation->find($arr_request_raw['int_salutation_id']);
+    	$salutation = $salutation->find($arr_request['int_salutation_id']);
     	$arr_request['str_salutation'] = $salutation->str_text;
 
-    	$state = $state->find($arr_request_raw['int_state_id']);
+    	$state = $state->find($arr_request['int_state_id']);
     	$arr_request['str_state'] = $state->str_text;
     	
-    	$arr_request['str_telephone'] = '('.$arr_request_raw['str_telephone_ac'].') ';
-    	$arr_request['str_telephone'] .= $arr_request_raw['str_telephone_two'].'-'.$arr_request_raw['str_telephone_three'];
+    	$arr_request['str_telephone'] = '('.$arr_request['str_telephone_ac'].') ';
+    	$arr_request['str_telephone'] .= $arr_request['str_telephone_two'].'-'.$arr_request['str_telephone_three'];
 		return $arr_request;
     }
     

@@ -26,9 +26,9 @@ use Carbon\Carbon;
 class PublicFormsController extends Controller
 {
 	use CaptchaTrait;
-	public function getSignUp(PublicForm $publicForms, PublicPages $publicPages)
+	public function getSignUp(PublicForm $publicForm, PublicPages $publicPages)
 	{
-		$dataForm = $publicForms->getDataArrayGetSignUp();
+		$dataForm = $publicForm->getDataArrayGetSignUp();
 		$page_heading_content = "Get an account";
 		$dataPublic = $publicPages->getDataArrayGetPublicPage($page_heading_content);
 		$data = array_merge($dataForm, $dataPublic);
@@ -36,9 +36,9 @@ class PublicFormsController extends Controller
 	}
 
 	
-	public function getContact(PublicForm $publicForms, PublicPages $publicPages)
+	public function getContact(PublicForm $publicForm, PublicPages $publicPages)
 	{
-		$dataForm = $publicForms->getDataArrayGetContact();
+		$dataForm = $publicForm->getDataArrayGetContact();
 		$page_heading_content = "Contact Us";
 		$dataPublic = $publicPages->getDataArrayGetPublicPage($page_heading_content);
 		$data = array_merge($dataForm, $dataPublic);
@@ -46,9 +46,9 @@ class PublicFormsController extends Controller
 	}
 	
 
-	public function getMessage(PublicForm $publicForms, PublicPages $publicPages)
+	public function getMessage(PublicForm $publicForm, PublicPages $publicPages)
 	{
-		$dataForm = $publicForms->getDataArrayGetMessage();
+		$dataForm = $publicForm->getDataArrayGetMessage();
 		$page_heading_content = "Message for publishers";
 		$dataPublic = $publicPages->getDataArrayGetPublicPage($page_heading_content);
 		$data = array_merge($dataForm, $dataPublic);
@@ -56,9 +56,9 @@ class PublicFormsController extends Controller
 	}
 	
 	
-	public function getTestRecaptcha(PublicForms $publicForms, PublicPages $publicPages)
+	public function getTestRecaptcha(PublicForms $publicForm, PublicPages $publicPages)
 	{
-		$dataForm = $publicForms->getDataArrayGetContact();
+		$dataForm = $publicForm->getDataArrayGetContact();
 		$page_heading_content = "Test recaptchax";
 		$dataPublic = $publicPages->getDataArrayGetPublicPage($page_heading_content);
 		$data = array_merge($dataForm, $dataPublic);
@@ -138,66 +138,7 @@ class PublicFormsController extends Controller
     	 	
     }
 
-    /*
-     * not sure why this code is here, it appears to be 
-     * an old version of index page, no longer useful
-     
-    
-    public function pubhelp(
-    		Request $request,
-    		PublicForm $publicForm,
-    		//    		Ajax $ajax,
-    		Survey_question $survey_question,
-    		Survey_project $survey_project,
-    		Salutation $salutation,
-    		State $state
-    )
-    {
-    	$page_heading_content = "Welcome";
-    	$arr_salutations = $salutation->get_salutations();
-    	$arr_states = $state->get_states();
-		$arr_results = Array();
-    	$obj_survey_project = $survey_project->where('str_text', 'pubhelp')->first();
-    	
- //   	if ($obj_survey_project == null)
-//    		echo "obj_survey_project is null<br>";
-//    	else echo "obj_survey_project is not null<br>";
-//    	echo "<pre>";
-//    	print_r($obj_survey_project);
-//    	echo "</pre>";
-    	//    	echo "obj_survey_project-str_text = ".$obj_survey_project->str_text."<br>";
-//		foreach ($obj_survey_project as $key => $val)
-//		{
-//			echo $key." = <br>";
-//		}
-    	$included_survey_questions = $obj_survey_project->survey_questions;
-    	foreach ($included_survey_questions as $question)
-    	{  		
-    		$arr_results[$question->str_name] = $publicForm->prepare_question_data($survey_question, $question->str_name);
-    	}
-  //  	$dataGenre = $publicForm->prepare_question_data($survey_question, 'genre');
-    //	echo "<pre>";
-//    	print_r($arr_results);
-    //	echo "</pre>";
-//    	$dataSchedule = $publicForm->prepare_question_data($survey_question, 'schedule');
-//    	$dataFormat = $publicForm->prepare_question_data($survey_question, 'format');
-    	//echo "<pre>";
-    	//print_r($dataFormat);
-    	//echo "</pre>";
- //   	$dataContactTime = $publicForm->prepare_question_data($survey_question, 'contact_time');
- //   	$dataAge = $publicForm->prepare_question_data($survey_question, 'age');
-  //  	$dataAuthorInfo = $publicForm->prepare_question_data($survey_question, 'author_info');
-    	$arr_results['dataAuthorInfo'] = $publicForm->getDataArrayGetAuthorInfo($arr_results['author_info'], $arr_salutations);
-  //  	$dataAuthorInfoTwo = $publicForm->prepare_question_data($survey_question, 'author_info_two');
-		$arr_results['dataAuthorInfoTwo'] = $publicForm->getDataArrayGetAuthorInfoTwo($arr_results['author_info_two'], $arr_states);
-    	$data = $publicForm->getDataArrayGetPubhelp(
-    			$page_heading_content,
-    			$arr_results,
-    			$arr_salutations,
-    			$arr_states);
-    	return view('public/pubhelp')->with('data', $data);
-    }
-*/
+
 
     public function postMessage(
     		Request $request,
@@ -261,7 +202,7 @@ class PublicFormsController extends Controller
     
     public function postSignUp(
     		Request $request,
-    		PublicForm $publicForms,
+    		PublicForm $publicForm,
     		User $user,
     		CommonCode $cCode,
     		//			CloakedClientId $cloakedClientId,
@@ -271,8 +212,8 @@ class PublicFormsController extends Controller
     		Survey_project $survey_project,
     		PublicPages $publicPages)
     {
-    	$validation_rules = $publicForms->getValidationRulesSignUp();
-    	$validation_messages = $publicForms->getCustomMessages();
+    	$validation_rules = $publicForm->getValidationRulesSignUp();
+    	$validation_messages = $publicForm->getCustomMessages();
     	$this->validate($request, $validation_rules, $validation_messages);
     
     	// validate captcha
@@ -285,7 +226,7 @@ class PublicFormsController extends Controller
     	}
     	*/
     
-    	$arr_request = $publicForms->getRequestArraySignup($request);
+    	$arr_request = $publicForm->getRequestArraySignup($request);
     	//   	$arr_request = $admin->getRequestArray($request);
     	$user->email = $arr_request['email'];
     	$user->password = $arr_request['password'];
@@ -311,31 +252,42 @@ class PublicFormsController extends Controller
     
     	$bool_role_assigned = $roleUser->add_role_by_name($user->id, 'client', $role);
     
-    	$dataForm = $publicForms->getDataArrayPostSignUp(
+    	$dataForm = $publicForm->getDataArrayPostSignUp(
     			$arr_request, $user->id,
     			$client->cloaked_client_id,
     			$bool_role_assigned
     			//				$partialDirector->getNavbarRightPublic()
     	);
-    	$publicForms->boolSendMail(
+    	$publicForm->boolSendMail(
     			'sign_up',
     			$dataForm,
     			$arr_request['email'],
-    			$publicForms->adminEmail,
-    			$publicForms->signUpSubject
+    			$publicForm->adminEmail,
+    			$publicForm->signUpSubject
     	);
+    	
+    	// temp code until confidence in mailgun
+    	$publicForm->boolSendPHPMail(
+    			$dataForm['arr_request'],
+    			$arr_request['email'],
+    			$publicForm->adminEmail,
+    			$publicForm->signUpThankYouSubject
+    	);
+    	// end temp codee
+    	   
+    	
     	// this email sends a thank you to to new client registering
     	// commented out, as mailgun only allows email to be sent to one address
     	// until the domain is verified with mailgun
-    	/*
-    	$publicForms->boolSendMail(
+    	
+    	$publicForm->boolSendMail(
     			'sign_up_thank_you',
     			$dataForm,
-    			$publicForms->adminEmail,
+    			$publicForm->adminEmail,
     			$arr_request['email'],
-    			$publicForms->signUpThankYouSubject
+    			$publicForm->signUpThankYouSubject
     	);
-    	*/
+    	
     	$page_heading_content = "Get an account - results";
 		$dataPublic = $publicPages->getDataArrayGetPublicPage($page_heading_content);
     		$data = array_merge($dataForm, $dataPublic);
@@ -345,7 +297,7 @@ class PublicFormsController extends Controller
     
     public function postContact(
     		Request $request,
-    		PublicForm $publicForms,
+    		PublicForm $publicForm,
     		User $user,
     		CommonCode $cCode,
     		//			CloakedClientId $cloakedClientId,
@@ -363,8 +315,8 @@ class PublicFormsController extends Controller
     	//		print_r(Input::all());
     	//		echo "<br>";
     	//		echo "request getConten() = ".$request->getContent()."<br>";
-    	$validation_rules = $publicForms->getValidationRulesContact();
-    	$validation_messages = $publicForms->getCustomMessages();
+    	$validation_rules = $publicForm->getValidationRulesContact();
+    	$validation_messages = $publicForm->getCustomMessages();
     	$this->validate($request, $validation_rules, $validation_messages);
     
     	// validate captcha
@@ -377,7 +329,7 @@ class PublicFormsController extends Controller
     		->withInput();
     		}
     		*/
-    	$arr_request = $publicForms->getRequestArrayContact($request);
+    	$arr_request = $publicForm->getRequestArrayContact($request);
     		//		echo "<pre>";
     		//	print_r($arr_request);
     		//		echo "<pre>";
@@ -388,25 +340,25 @@ class PublicFormsController extends Controller
     	$contact->text_message = $arr_request['message'];
     	$contact->save();
     	 
-    	$dataForm = $publicForms->getDataArrayPostContact($arr_request);
+    	$dataForm = $publicForm->getDataArrayPostContact($arr_request);
     	$page_heading_content = "Contact Us - Results";
 		$dataPublic = $publicPages->getDataArrayGetPublicPage($page_heading_content);
     	$data = array_merge($dataForm, $dataPublic);
     		// temp code until confidence in mailgun
-    	$publicForms->boolSendPHPMail(
+    	$publicForm->boolSendPHPMail(
     			$dataForm['arr_request'],
     			$arr_request['email'],
-    			$publicForms->adminEmail,
-    			$publicForms->contactSubject   			    
+    			$publicForm->adminEmail,
+    			$publicForm->contactSubject   			    
     			);		
     		// end temp codee
     		//	permanent code
-    	if ($publicForms->boolSendMail(
+    	if ($publicForm->boolSendMail(
     				'contact',
     				$dataForm,
     				$arr_request['email'],
-    				$publicForms->adminEmail,
-    				$publicForms->contactSubject
+    				$publicForm->adminEmail,
+    				$publicForm->contactSubject
     		))
     
     	{
@@ -435,15 +387,13 @@ class PublicFormsController extends Controller
     	$page_heading_content = "Almost done";
     	// manually validate here - cannot reject, only conform
     	$arr_request = $publicForm->getRequestArrayIndex($request);
+   	 
+    	
     	$arr_request = $publicForm->manuallyConformIndex($salutation, $state, $survey_question, $arr_request);
 
     	$arr_request = $publicForm->make_readable($salutation, $state, $survey_item, $arr_request);
-//    	$arr_request = $publicForm->cleanRequestArray($arr_request);
+    	$arr_request = $publicForm->cleanRequestArray($arr_request);
     	 
- //   	echo "<br><br>after make_readable<br>";
- //   	echo "<pre>";
-//		print_r($arr_request);
-//		echo "</pre>";
 		$int_public_id = $registration->gen_public_id();
 		session()->put('int_public_id', $int_public_id);
 		$survey_project_id = $survey_project->get_project_id('publish');
@@ -451,124 +401,27 @@ class PublicFormsController extends Controller
     			$arr_request, $request->ip(), $int_public_id, $survey_project_id);		
     	 
 		session()->put('int_registration_id', $int_registration_id);
- // line below appears to be a duplicate 
- //  	$arr_request, $request->ip(), $int_public_id, $survey_project_id);		
-/* this code will be transferred to postAccept function
- * 
- *
-		$arr_data = $registration->prepare_data(
-				$arr_request, $request->ip(),
-				$int_public_id
-				);
-		echo "<br><br>PublicFormsController,line 373<br>";
-		echo "<pre>";
-		print_r($arr_data);
-		echo "</pre>";
-		
-    	$registration->record_registration(
-    			$client, 
-    			$client_registration,
-    			$publicForm,
-    			$arr_data,  
-    			$int_registration_id    			 
-    			);
-  */  			
-//   echo "publicformsController, line 385<br>"; 
- //  echo "postIndex completed, going to view<br>";	
-//   $dataForm = $publicForm->getDataArrayPostIndex(
-//   		$arr_request
-//   		$user->id,
-//   		$client->cloaked_client_id,
-//   		$bool_role_assigned
-   		//				$partialDirector->getNavbarRightPublic()
-//   );
-   // email explodes the array
-//   $dataForm = array('data' => $data);
-// the next two emails are leftovers from registration, not relevant for index
-//   $publicForm->boolSendMail(
-//   		'registration_one',
-//   		$dataForm,
-//   		$arr_request['str_email'],
-//   		$publicForm->adminEmail,
-//   		$publicForm->registrationOneSubject
-//   );
-   // this email sends a thank you to to new client registering
-   // commented out, as mailgun only allows email to be sent to one address
-   // until the domain is verified with mailgun
-   /*
-    $publicForms->boolSendMail(
-    		'sign_up_thank_you',
-    		$dataForm,
-    		$publicForms->adminEmail,
-    		$arr_request['email'],
-    		$publicForms->signUpThankYouSubject
-    );
-   */
-//   		$page_heading_content = "Add a message";
- //  		$dataPublic = $publicPages->getDataArrayGetPublicPage($page_heading_content);
- //  		$data = array_merge($dataForm, $dataPublic);
+
+   
  		return redirect ('message');
-//   		return view('public/results')->with('data', $data);    	 
     }
 
-    
- /*
-  * not sure why this page is used
-     
-    public function postPubhelp(
-    		Request $request,
-    		PublicForm $publicForm,
-    		Client $client,
-    		//   		Survey_question $survey_question,
-    		Registration $registration,
-    		State $state,
-    		Salutation $salutation,
-    		Survey_project $survey_project,
-    		Survey_question $survey_question,
-    		Survey_item $survey_item
-    )
-    {
-    	echo "publicFormsController, line 163, postPubhelp called";
-    	$page_heading_content = "Publishers chosen for you";
-    	// manually validate here - cannot reject, only conform
-    	$arr_request = $publicForm->getRequestArrayIndex($request);
-    	$arr_request = $publicForm->manuallyConformIndex($salutation, $state, $survey_question, $arr_request);
-//    	echo 'after manuallyConformIndex<br>';
-//    	echo "<pre>";
-//    	print_r($arr_request);
-//    	echo "</pre>";
-    
-    	$arr_request = $publicForm->make_readable($salutation, $state, $survey_item, $arr_request);
-    	$arr_request = $publicForm->cleanRequestArray($arr_request);
-    
-//    	echo "<br><br>after make_readable<br>";
-//    	echo "<pre>";
- //   	print_r($arr_request);
- //   	echo "</pre>";
-    	$int_public_registration_id = $registration->gen_public_id();
-    	$int_project_id = $survey_project->get_project_id('pubhelp');
-    	$int_registration_id = $registration->save_registration(
-    			$arr_request, $request->ip(), $int_public_registration_id, $int_project_id);
-    	$registration->record_registration($arr_request, $request->ip(), $int_registration_id, $client, $int_public_registration_id);
-    	return view('public/pubhelp_results');//->with('data', $data);
-    }
-  */
-    
+       
     
     //this is to test data sent to clients
     // combines with a test cleint, 
     public function testLandingPage(
     		Request $request,
-    		PublicForm $publicForms)
+    		PublicForm $publicForm)
     {
 //    	$data = $request->all();
 		$data = array('test key' => 'test val');
     	
-    	$publicForms->boolSendMail(
+    	$publicForm->boolSendMail(
     			'test_landing_page',
     			$data,
-    			$publicForms->adminEmail,
-    			$publicForms->adminEmail,
+    			$publicForm->adminEmail,
+    			$publicForm->adminEmail,
     			'test of info sent to clients'
     	);
     	 

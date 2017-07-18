@@ -745,10 +745,10 @@ foreach($obj_all_clients_raw as $client_raw)
     				$arr_all_regs_registration_data,
     				$this->arr_logged_in_user
     		);
-    		//   	echo "admin controller, line 679";
-    		//   	echo "<pre>";
-    		//   	print_r($data);
-    		//   	echo "</pre>";
+    		   	echo "admin controller, line 679";
+    		   	echo "<pre>";
+    		   	print_r($data);
+    		   	echo "</pre>";
     		return view('admin/view_all_registrations')->with('data', $data);
     }
     
